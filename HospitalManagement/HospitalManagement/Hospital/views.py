@@ -156,29 +156,28 @@ def doctor_index(request):
     error = " "
     # visits.objects.all().delete()
     # Patient.objects.all().delete()
-    
     if (request.user.is_authenticated):
         if (len(request.user.first_name) > 0 and request.user.first_name[-1] == '1'):
 
             if (request.method == 'POST'):
                 pid = request.POST['application_id']
-                visit1 = visits.objects.filter(patientId=pid).first()
+                visit1 = visits.objects.filter(patientId = pid).first()
                 if visit1 == None:
                     application = applications.objects.all()
                     error = "No data Matched"
-                    return render(request, 'Doctor/doctor_index.html', {'person': application, "error": error, "app_id": pid, "visit2": application})
+                    return render(request, 'Doctor/doctor_index.html', {'person1': application, "error": error, "app_id": pid, "visit2": application})
                 else:
                     error = ""
-                    visit2 = visits.objects.filter(patientId=pid).first()
-                    visit1 = Patient.objects.filter(id=pid).first()
-                    return render(request, 'Doctor/doctor_index.html', {'person': visit1, "error": error, "app_id": pid, "visit2": visit2})
+                    visit1 = visits.objects.filter(patientId = pid).all()
+                    visit2 = visits.objects.filter(patientId = pid).first()
+                    return render(request, 'Doctor/doctor_index.html', {'person1': visit1, "error": error, "app_id": pid, "visit2": visit2})
 
         else:
             logout(request)
             return redirect('/home/')
 
     application = applications.objects.all()
-    return render(request, "Doctor/doctor_index.html", {'person': application, "error": error, "visit2": application})
+    return render(request, "Doctor/doctor_index.html", {'person1': application, "error": error, "visit2": application})
 
 
 def review_patient(request):
@@ -194,9 +193,19 @@ def review_patient(request):
             application = applications.objects.all()
             return redirect("doctor_index")
         else:
+            p=Patient.objects.filter(id = pid).first()
+            visit = visits(patientId=p,
+            symptoms=symptoms,
+            diagnosis=diagnosis,
+            prescription=prescription,
+            dateOfRegistration=dateOfRegistration
+            )
+            
             Patient.objects.filter(id=pid).update(symptoms=symptoms)
             Patient.objects.filter(id=pid).update(diagnosis=diagnosis)
             Patient.objects.filter(id=pid).update(prescription=prescription)
+            visit.save()
+
             return redirect('doctor_index')
 
     return redirect('doctor_index')
