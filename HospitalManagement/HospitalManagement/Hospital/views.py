@@ -156,6 +156,9 @@ def doctor_index(request):
     error = " "
     # visits.objects.all().delete()
     # Patient.objects.all().delete()
+    # applications.objects.all().delete()
+    # visit1 = visits.objects.filter(patientId=2).first()
+    # applications.objects.filter(visit = visit1).first().delete()
     if (request.user.is_authenticated):
         if (len(request.user.first_name) > 0 and request.user.first_name[-1] == '1'):
 
@@ -169,7 +172,7 @@ def doctor_index(request):
                 else:
                     error = ""
                     visit1 = visits.objects.filter(patientId = pid).all()
-                    visit2 = visits.objects.filter(patientId = pid).first()
+                    visit2 = Patient.objects.filter(id = pid).first()
                     return render(request, 'Doctor/doctor_index.html', {'person1': visit1, "error": error, "app_id": pid, "visit2": visit2})
 
         else:
@@ -219,9 +222,10 @@ def receptionist_index(request):
         visit1 = visits.objects.filter(patientId=pid).first()
         visit = applications.objects.filter(visit=visit1).all()
         if (visit1 == None ):
-            return render(request, "Receptionist/receptionist_index.html", {'application': application,'pid':pid})
+            return render(request, "Receptionist/receptionist_index.html", {'application': visit,'pid':pid})
 
         else:
+            
             return render(request, "Receptionist/receptionist_index.html", {'application': visit,'pid':pid})
 
     
@@ -300,7 +304,7 @@ def receptionist_existing_patient(request, patient_id):
 
             return render(request, "Receptionist/receptionist_index.html", {'error': error})
         else:
-            visits.objects.filter(patientId=pid).update(symptoms=symptoms)  
+            Patient.objects.filter(id=pid).update(symptoms=symptoms)  
 
             return redirect('Receptionist Index')
     else:

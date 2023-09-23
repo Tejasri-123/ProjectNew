@@ -9,7 +9,7 @@ class Patient(models.Model):
     dateOfBirth = models.DateField(default=date.today())
     gender = models.CharField('Gender', max_length=50, default='Male')
     email = models.EmailField('Email', max_length=100, null=True)
-    mobileNumber = models.CharField('Mobile Number', max_length=15)
+    mobileNumber = models.CharField('Mobile Number', max_length=13)
     aadharNumber = models.CharField('Aadhar Number', max_length=15)
     city = models.CharField('City', max_length=50)
     symptoms = models.CharField('Symptoms',max_length=100,default="None")
